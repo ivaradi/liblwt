@@ -21,10 +21,10 @@
 
 #include "EPoll.h"
 #include "PolledFD.h"
-//#include "Log.h"
 
 #include <cstring>
 #include <cerrno>
+// #include <cstdio>
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +71,8 @@ int EPoll::wait(bool& hadEvents, int timeout)
         processing = true;
         for(int i = 0; i<a; ++i) {
             PolledFD* fd = reinterpret_cast<PolledFD*>(events[i].data.ptr);
-            // Log::debug("EPoll::wait: fd=%d\n", fd->fd);
+            // printf("EPoll::wait: fd=%d, events=0x%08x\n", 
+            //        fd->fd, events[i].events);
             if (fdsToDelete.find(fd)==fdsToDelete.end()) {
                 fd->handleEvents(events[i].events);
             }

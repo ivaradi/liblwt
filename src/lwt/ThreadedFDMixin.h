@@ -214,10 +214,10 @@ template <class Super> inline int ThreadedFDMixin<Super>::close()
 template <class Super>
 void ThreadedFDMixin<Super>::handleEvents(uint32_t events)
 {
-    if (readWaiter.isBlocked() && (events&EPOLLIN)!=0) {
+    if (readWaiter.isBlocked() && (events&(EPOLLIN|EPOLLHUP|EPOLLERR))!=0) {
         readWaiter.unblock();
     }
-    if (writeWaiter.isBlocked() && (events&EPOLLOUT)!=0) {
+    if (writeWaiter.isBlocked() && (events&(EPOLLOUT|EPOLLHUP|EPOLLERR))!=0) {
         writeWaiter.unblock();
     }
 }
