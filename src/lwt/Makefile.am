@@ -12,6 +12,8 @@ liblwt_a_SOURCES=\
 	ThreadedSocket.cc	\
 	Timer.cc		\
 	Scheduler.cc		\
+	IOServer.cc		\
+	Dirent.cc		\
 	Log.cc			\
 	util.cc
 
@@ -33,5 +35,7 @@ include_lwt_HEADERS=\
 	ThreadedSocket.h	\
 	Timer.h			\
 	Scheduler.h		\
+	IOServer.h		\
+	Dirent.h		\
 	Log.h			\
 	util.h

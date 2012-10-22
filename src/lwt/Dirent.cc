@@ -16,59 +16,80 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef LWT_THREADEDFD
-#define LWT_THREADEDFD
 //------------------------------------------------------------------------------
 
-#include "PolledFD.h"
-#include "ThreadedFDMixin.h"
+#include "Dirent.h"
 
 //------------------------------------------------------------------------------
 
-namespace lwt {
+using lwt::OpenDir;
+using lwt::ReadDir;
+using lwt::CloseDir;
 
 //------------------------------------------------------------------------------
 
-/**
- * A threaded file descriptor.
- */
-class ThreadedFD : public ThreadedFDMixin<PolledFD>
+DIR* OpenDir::call(const char* name)
 {
-public:
-    /**
-     * Construct the file descriptor
-     */
-    ThreadedFD(int fd);
-    
-protected:
-    /**
-     * Destructor is protected to avoid inadvertent deletion
-     */
-    virtual ~ThreadedFD();
-
-};
-
-//------------------------------------------------------------------------------
-// Inline definitions
-//------------------------------------------------------------------------------
-
-inline ThreadedFD::ThreadedFD(int fd):
-    ThreadedFDMixin<PolledFD>(fd)
-{
+    OpenDir operation(name);
+    if (IOServer::get().execute(&operation)) {
+        errno = operation.getErrorNumber();
+        return operation.getStream();
+    } else {
+        return 0;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-inline ThreadedFD::~ThreadedFD()
+void OpenDir::performErrno()
 {
+    stream = opendir(name);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+int ReadDir::call(DIR* dirp, struct dirent* entry, struct dirent** result)
+{
+    ReadDir operation(dirp, entry);
+    if (IOServer::get().execute(&operation)) {
+        errno = operation.getErrorNumber();
+        *result = operation.getEntry();
+        return operation.getResult();
+    } else {
+        return -1;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-} /* namespace lwt */
+void ReadDir::performErrno()
+{
+    result = readdir_r(dirp, entry, &entry);
+}
 
 //------------------------------------------------------------------------------
-#endif // LWT_THREADEDFD
+//------------------------------------------------------------------------------
+
+int CloseDir::call(DIR* dirp)
+{
+    CloseDir operation(dirp);
+    if (IOServer::get().execute(&operation)) {
+        errno = operation.getErrorNumber();
+        return operation.getResult();
+    } else {
+        return -1;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void CloseDir::performErrno()
+{
+    result = closedir(dirp);
+}
+
+//------------------------------------------------------------------------------
 
 // Local Variables:
 // mode: C++
