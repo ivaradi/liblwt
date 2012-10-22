@@ -25,7 +25,10 @@
 
 #include <set>
 
+#include <cstdarg>
+
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 //------------------------------------------------------------------------------
 
@@ -110,6 +113,11 @@ public:
      * Write into the file descriptor.
      */
     ssize_t write(const void* buf, size_t count);
+
+    /**
+     * Perform an IOCTL call on the file descriptor
+     */
+    int ioctl(int request, ...);
 
     /**
      * Close the file descriptor. The requested events are set to 0
@@ -200,6 +208,17 @@ inline ssize_t PolledFD::read(void* buf, size_t count)
 inline ssize_t PolledFD::write(const void* buf, size_t count)
 {
     return ::write(fd, buf, count);
+}
+
+//------------------------------------------------------------------------------
+
+inline int PolledFD::ioctl(int request, ...)
+{
+    va_list ap;
+    va_start(ap, request);
+    int result = ::ioctl(fd, request, va_arg(ap, void*));
+    va_end(ap);
+    return result;
 }
 
 //------------------------------------------------------------------------------
