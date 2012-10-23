@@ -94,6 +94,11 @@ public:
      */
     virtual ~Timer();
 
+    /**
+     * Cancel this timer. It will be removed from the set.
+     */
+    void cancel();
+
 protected:
     /**
      * Handle the timeout. The timer should be removed before this

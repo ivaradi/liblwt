@@ -121,3 +121,15 @@ void Timer::sleep(millis_t ms)
 }
 
 //------------------------------------------------------------------------------
+
+void Timer::cancel()
+{
+    for(timers_t::iterator i = timers.lower_bound(this); i!=timers.end(); ++i) {
+        if (*i==this) {
+            timers.erase(i);
+            return;
+        }
+    }    
+}
+
+//------------------------------------------------------------------------------
