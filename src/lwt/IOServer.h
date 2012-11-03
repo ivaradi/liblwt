@@ -151,6 +151,11 @@ public:
      */
     bool executeNonBlocking(Operation* operation);
 
+    /**
+     * Stop the I/O server by closing all file descriptors.
+     */
+    void stop();
+
 private:
     /**
      * Get an available worker.

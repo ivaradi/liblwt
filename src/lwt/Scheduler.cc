@@ -54,7 +54,9 @@ void Scheduler::run()
         if (result<0) {
             assert(0 && "epoll failed");
         }
+        // printf("Scheduler::run0: hadEvents=%d\n", hadEvents);
         hadEvents = Timer::handleTimeouts() || hadEvents;
+        // printf("Scheduler::run1: hadEvents=%d\n", hadEvents);
     }
 }
 

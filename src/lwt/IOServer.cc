@@ -23,6 +23,8 @@
 #include "ThreadedFD.h"
 #include "EPoll.h"
 
+#include <cstdio>
+
 #include <pthread.h>
 
 //------------------------------------------------------------------------------
@@ -35,7 +37,7 @@ class IOServer::Worker
 {
 private:
     /**
-     * Create a pipe. 
+     * Create a pipe.
      *
      * @param returnWriting if true, the writing end will be returned,
      * otherwise the reading end
@@ -53,7 +55,7 @@ private:
      * The POSIX thread running this worker.
      */
     pthread_t thread;
-    
+
     /**
      * The writing end of the pipe through which operations are sent to
      * this worker.
@@ -71,7 +73,7 @@ private:
      * received from the clients.
      */
     int fromClient;
-    
+
     /**
      * The writing end of the pipe through which results are
      * sent to the clients.
@@ -96,7 +98,7 @@ public:
      * @return if the pointer could be written
      */
     bool start(Operation* operation);
-    
+
     /**
      * Wait the result of the last operation sent.
      *
@@ -106,12 +108,12 @@ public:
 
     /**
      * Execute the given operation. This is a combination of start and
-     * waitResult. 
+     * waitResult.
      *
      * @return if the operation could be written and executed.
      */
     bool execute(Operation* operation);
-    
+
 private:
     /**
      * Perform the actual operation of the thread.
@@ -155,6 +157,7 @@ IOServer::Worker::Worker() :
 
 IOServer::Worker::~Worker()
 {
+    toWorker->close();
     EPoll::get().destroy(toWorker);
     EPoll::get().destroy(fromWorker);
     pthread_join(thread, 0);
@@ -253,10 +256,28 @@ bool IOServer::execute(Operation* operation, bool canBlock)
 
 //------------------------------------------------------------------------------
 
+void IOServer::stop()
+{
+    delete [] workers;
+    workers = 0;
+
+    availableWorkers.clear();
+
+    for(std::deque<BlockedThread*>::iterator i = waiters.begin();
+        i!=waiters.end(); ++i)
+    {
+        BlockedThread* blockedThread = *i;
+        delete blockedThread;
+    }
+    waiters.clear();
+}
+
+//------------------------------------------------------------------------------
+
 IOServer::Worker* IOServer::getWorker(bool canBlock)
 {
     while(availableWorkers.empty()) {
-        if (!canBlock) return 0;
+        if (!canBlock || workers==0) return 0;
         BlockedThread* blockedThread = new BlockedThread;
         waiters.push_back(blockedThread);
         blockedThread->blockCurrent();

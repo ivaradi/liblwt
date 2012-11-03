@@ -40,8 +40,9 @@ PolledFD::instances_t PolledFD::instances;
 
 int PolledFD::updateAllEvents(uint32_t& events)
 {
+    size_t count = 0;
     for(instances_t::const_iterator i = instances.begin();
-        i!=instances.end(); ++i)
+        i!=instances.end(); ++i, ++count)
     {
         PolledFD* polledFD = *i;
         int result = polledFD->updateEvents(events);
@@ -51,6 +52,7 @@ int PolledFD::updateAllEvents(uint32_t& events)
             return result;
         }
     }
+    // printf("PolledFD::updateAllEvents: count=%zu\n", count);
     return 0;
 }
 

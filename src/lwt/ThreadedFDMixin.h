@@ -45,7 +45,7 @@ protected:
      * The thread waiting for an EPOLLIN
      */
     BlockedThread readWaiter;
-    
+
     /**
      * The thread waiting for an EPOLLOUT
      */
@@ -65,7 +65,7 @@ public:
      * @return if we could cancel the reading
      */
     bool cancelRead();
-    
+
     /**
      * Cancel a writing, if one is in progress.
      *
@@ -92,13 +92,13 @@ public:
      * @return an indication of whether all data could be written
      */
     bool writeAll(const void* buf, size_t count);
-    
+
     /**
      * Close the file descriptor. It unblocks any waiters.
      */
     int close();
 
-protected:    
+protected:
     /**
      * It unblocks any waiting thread.
      *
@@ -118,7 +118,7 @@ protected:
      * @return if we were unblocked normally
      */
     bool waitRead();
-    
+
     /**
      * Wait for the file descriptor becoming writable
      *
@@ -152,7 +152,7 @@ template <class Super> inline bool ThreadedFDMixin<Super>::cancelWrite()
 
 //------------------------------------------------------------------------------
 
-template <class Super> ssize_t 
+template <class Super> ssize_t
 ThreadedFDMixin<Super>::read(void* buf, size_t count)
 {
     while(true) {
@@ -167,7 +167,7 @@ ThreadedFDMixin<Super>::read(void* buf, size_t count)
 
 //------------------------------------------------------------------------------
 
-template <class Super> ssize_t 
+template <class Super> ssize_t
 ThreadedFDMixin<Super>::write(const void* buf, size_t count)
 {
     while(true) {
@@ -230,7 +230,7 @@ int ThreadedFDMixin<Super>::updateEvents(uint32_t& events)
     Super::requestedEvents = 0;
     if (readWaiter.isBlocked()) Super::requestedEvents |= EPOLLIN;
     if (writeWaiter.isBlocked()) Super::requestedEvents |= EPOLLOUT;
-    
+
     return Super::updateEvents(events);
 }
 
