@@ -38,4 +38,8 @@ include_lwt_HEADERS=\
 	IOServer.h		\
 	Dirent.h		\
 	Log.h			\
+	BufferedReader.h	\
+	BufferedWriter.h	\
+	DataReader.h		\
+	DataWriter.h		\
 	util.h
