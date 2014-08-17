@@ -103,9 +103,11 @@ Thread::Thread(bool joinable) :
     if (saveContext(callerContext)==0) {
         uintptr_t stackTopAddress = reinterpret_cast<uintptr_t>(stackTop);
 #if defined(__i386__)
-        asm volatile("mov %0,%%esp" : : "g" (stackTopAddress));
-        asm volatile("push %0" : : "g" (&callerContext));
-        asm volatile("push %0" : : "g" (this));
+	asm volatile("mov %0,%%ebx" : : "g" (stackTopAddress) : "rbx");
+	asm volatile("mov %0,-4(%%ebx)" : : "g" (&callerContext) : "memory");
+	asm volatile("mov %0,-8(%%ebx)" : : "g" (this) : "memory");
+        asm volatile("mov %%ebx,%%esp" : : : "esp");
+        asm volatile("sub $8,%%esp" : : : "esp");
         asm volatile("call startThread");
 #elif defined(__x86_64__)
         asm volatile("mov %0,%%rdi" : : "g" (this));
