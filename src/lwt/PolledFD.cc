@@ -79,3 +79,25 @@ int PolledFD::updateEvents(uint32_t& events)
 }
 
 //------------------------------------------------------------------------------
+
+void PolledFD::clearFD()
+{
+    EPoll::get().remove(this);
+    ::close(fd);
+    fd = -1;
+}
+
+//------------------------------------------------------------------------------
+
+void PolledFD::setFD(int newFD)
+{
+    if (newFD>=0) {
+        fd = newFD;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL)|O_NONBLOCK);
+        currentEvents = 0;
+    } else {
+        requestedEvents = 0;
+    }
+}
+
+//------------------------------------------------------------------------------

@@ -124,6 +124,18 @@ public:
      */
     int close();
 
+    /**
+     * Clear the file descriptor. The old one will be removed from epoll and
+     * closed. It must be followed by a call to setFD() with a new file
+     * descriptor.
+     */
+    void clearFD();
+
+    /**
+     * Set a new file descriptor.
+     */
+    void setFD(int newFD);
+
 protected:
     /**
      * Handle the event arriving for this file descriptor. 
