@@ -79,7 +79,7 @@ public:
      * Construct the file descriptor and add it to the poll with the
      * given events, if events is not 0.
      */
-    PolledFD(int fd, uint32_t events = 0);
+    PolledFD(int fd = -1, uint32_t events = 0);
 
 protected:
     /**
@@ -134,7 +134,7 @@ public:
     /**
      * Set a new file descriptor.
      */
-    void setFD(int newFD);
+    void setFD(int newFD, uint32_t events);
 
 protected:
     /**
@@ -174,7 +174,11 @@ inline PolledFD::PolledFD(int fd, uint32_t events) :
     currentEvents(0),
     requestedEvents(events)
 {
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL)|O_NONBLOCK);
+    if (fd>=0) {
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL)|O_NONBLOCK);
+    } else {
+        requestedEvents = 0;
+    }
     instances.insert(this);
 }
 

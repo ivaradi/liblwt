@@ -89,11 +89,12 @@ void PolledFD::clearFD()
 
 //------------------------------------------------------------------------------
 
-void PolledFD::setFD(int newFD)
+void PolledFD::setFD(int newFD, uint32_t events)
 {
     if (newFD>=0) {
         fd = newFD;
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL)|O_NONBLOCK);
+        requestedEvents = events;
         currentEvents = 0;
     } else {
         requestedEvents = 0;
