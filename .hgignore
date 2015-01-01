@@ -4,6 +4,7 @@ aclocal.m4
 autom4te.cache
 configure$
 configure.lineno$
+compile
 depcomp
 install-sh
 missing
