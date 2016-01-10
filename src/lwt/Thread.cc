@@ -110,8 +110,8 @@ Thread::Thread(bool joinable) :
         asm volatile("sub $8,%%esp" : : : "esp");
         asm volatile("call startThread");
 #elif defined(__x86_64__)
-        asm volatile("mov %0,%%rdi" : : "g" (this));
-        asm volatile("mov %0,%%rsi" : : "g" (&callerContext));
+        asm volatile("mov %0,%%rdi" : : "g" (this) : "rdi");
+        asm volatile("mov %0,%%rsi" : : "g" (&callerContext) : "rsi");
         asm volatile("mov %0,%%rsp" : : "g" (stackTopAddress));
         asm volatile("call startThread");
 #else
