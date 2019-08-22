@@ -26,6 +26,8 @@
 #include "StackManager.h"
 #include "EPoll.h"
 
+#include <memory>
+
 #include <cassert>
 
 //------------------------------------------------------------------------------
@@ -60,7 +62,7 @@ private:
     /**
      * Our epoll wrapper
      */
-    EPoll epoll;
+    std::unique_ptr<EPoll> epoll;
 
     /**
      * The first ready thread
@@ -81,7 +83,8 @@ public:
     /**
      * Construct the scheduler.
      */
-    Scheduler(size_t stackSize = 16384, size_t stacksPerPool = 128);
+    Scheduler(size_t stackSize = 16384, size_t stacksPerPool = 128,
+              std::unique_ptr<EPoll> epoll = nullptr);
 
     /**
      * Destroy the scheduler.
@@ -137,8 +140,10 @@ inline Scheduler& Scheduler::get()
 
 //------------------------------------------------------------------------------
 
-inline Scheduler::Scheduler(size_t stackSize, size_t stacksPerPool) :
+inline Scheduler::Scheduler(size_t stackSize, size_t stacksPerPool,
+                            std::unique_ptr<EPoll> epoll) :
     stackManager(stackSize, stacksPerPool),
+    epoll(epoll ? std::move(epoll) : std::make_unique<EPoll>()),
     readyFirst(0),
     readyLast(0)
 {

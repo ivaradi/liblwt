@@ -77,7 +77,7 @@ public:
     /**
      * Destroy the wrapper
      */
-    ~EPoll();
+    virtual ~EPoll();
 
     /**
      * Add the given file descriptor with the given event flags.
@@ -106,7 +106,7 @@ public:
      * will be processed, i.e. the corresponding file descriptors will
      * be called.
      */
-    int wait(bool& hadEvents, int timeout = -1);
+    virtual int wait(bool& hadEvents, int timeout = -1);
 };
 
 //------------------------------------------------------------------------------

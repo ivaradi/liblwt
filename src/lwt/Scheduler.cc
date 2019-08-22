@@ -50,7 +50,7 @@ void Scheduler::run()
             else timeout = earliest - now;
         }
 
-        int result = epoll.wait(hadEvents, timeout);
+        int result = epoll->wait(hadEvents, timeout);
         if (result<0) {
             assert(0 && "epoll failed");
         }
