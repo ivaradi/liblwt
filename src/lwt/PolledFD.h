@@ -100,6 +100,11 @@ public:
     void clearEvents(uint32_t events);
     
     /**
+     * Set the requested events to the given one.
+     */
+    void setRequestedEvents(uint32_t events);
+
+    /**
      * Get the requested events of the socket.
      */
     uint32_t getRequestedEvents() const;
@@ -203,6 +208,13 @@ inline void PolledFD::setEvents(uint32_t events)
 inline void PolledFD::clearEvents(uint32_t events)
 {
     requestedEvents &= ~events;
+}
+
+//------------------------------------------------------------------------------
+
+inline void PolledFD::setRequestedEvents(uint32_t events)
+{
+    requestedEvents = events;
 }
 
 //------------------------------------------------------------------------------
