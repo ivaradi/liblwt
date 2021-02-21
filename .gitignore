@@ -2,8 +2,8 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache
-configure$
-configure.lineno$
+configure
+configure.lineno
 compile
 depcomp
 install-sh
@@ -13,6 +13,6 @@ src/\.deps
 src/lwt/\.deps
 src/lwt/liblwt.a
 src/lwt/test
-src/proxymux$
+src/proxymux
 config.log
 config.status
