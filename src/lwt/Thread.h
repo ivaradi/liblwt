@@ -31,7 +31,7 @@ namespace lwt { class Thread; }
 
 //------------------------------------------------------------------------------
 
-extern "C" void startThread(lwt::Thread*, lwt::Context&);
+extern "C" void startThread(lwt::Thread*, lwt::Context&) __attribute__((used));
 
 //------------------------------------------------------------------------------
 
