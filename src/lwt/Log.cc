@@ -22,6 +22,8 @@
 #include "Log.h"
 #include "Thread.h"
 
+#include <ctime>
+
 //------------------------------------------------------------------------------
 
 using lwt::Log;
