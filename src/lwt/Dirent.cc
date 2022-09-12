@@ -49,15 +49,14 @@ void OpenDir::performErrno()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-int ReadDir::call(DIR* dirp, struct dirent* entry, struct dirent** result)
+struct dirent* ReadDir::call(DIR* dirp)
 {
-    ReadDir operation(dirp, entry);
+    ReadDir operation(dirp);
     if (IOServer::get().execute(&operation)) {
         errno = operation.getErrorNumber();
-        *result = operation.getEntry();
         return operation.getResult();
     } else {
-        return -1;
+        return 0;
     }
 }
 
@@ -65,7 +64,7 @@ int ReadDir::call(DIR* dirp, struct dirent* entry, struct dirent** result)
 
 void ReadDir::performErrno()
 {
-    result = readdir_r(dirp, entry, &entry);
+    result = readdir(dirp);
 }
 
 //------------------------------------------------------------------------------

@@ -84,7 +84,7 @@ public:
     /**
      * Make a call with this operation.
      */
-    static int call(DIR* dirp, struct dirent* entry, struct dirent** result);
+    static struct dirent* call(DIR* dirp);
 
 private:
     /**
@@ -93,33 +93,20 @@ private:
     DIR* dirp;
 
     /**
-     * The directory entry to put the result into. On return it will
-     * be 0, if readdir_r returned successfully, but the end of the
-     * directory has been reached, otherwise it will remain the entry
-     * given.
+     * The resulting directory entry.
      */
-    struct dirent* entry;
-
-    /**
-     * The result code.
-     */
-    int result;
+    struct dirent* result;
 
 public:
     /**
      * Construct the operation.
      */
-    ReadDir(DIR* dirp, struct dirent* entry);
+    ReadDir(DIR* dirp);
 
     /**
      * Get the result.
      */
-    int getResult() const;
-
-    /**
-     * Get the entry;
-     */
-    struct dirent* getEntry() const;
+    struct dirent* getResult() const;
 
 protected:
     /**
@@ -192,25 +179,17 @@ inline DIR* OpenDir::getStream() const
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-inline ReadDir::ReadDir(DIR* dirp, struct dirent* entry) :
+inline ReadDir::ReadDir(DIR* dirp) :
     dirp(dirp),
-    entry(entry),
-    result(-1)
+    result(0)
 {
 }
 
 //------------------------------------------------------------------------------
 
-inline int ReadDir::getResult() const
+inline struct dirent* ReadDir::getResult() const
 {
     return result;
-}
-
-//------------------------------------------------------------------------------
-
-inline struct dirent* ReadDir::getEntry() const
-{
-    return entry;
 }
 
 //------------------------------------------------------------------------------
